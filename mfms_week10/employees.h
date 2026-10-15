@@ -27,4 +27,6 @@ const char* getEmployeeName(int i);     /* name of employee number i         */
 /* File handling - Week 10 */
 void saveEmployees(void);
 void loadEmployees(void);
+void saveEmployeesBinary(void);
+void loadEmployeesBinary(void);
 #endif                       /* closes the #ifndef above */

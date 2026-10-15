@@ -406,3 +406,78 @@ void loadEmployees(void)
 
     printf("Loaded %d employee record(s) from data/employees.txt\n", count);
 }
+
+/* ---------- save all employees to a BINARY file ---------- */
+void saveEmployeesBinary(void)
+{
+    FILE *fp;
+
+    /* "wb" = write binary. On Windows this matters: in text mode
+       every \n would be turned into \r\n, which would corrupt
+       the raw bytes of a double. */
+    fp = fopen("data/employees.dat", "wb");
+
+    if (fp == NULL) {
+        printf("Error: could not open data/employees.dat for writing.\n");
+        return;
+    }
+
+    /* The record count goes first, so the loader knows how many
+       items to read back. */
+    fwrite(&count, sizeof(int), 1, fp);
+
+    /* fwrite copies the bytes of memory straight to disk -
+       no formatting, no conversion to characters. */
+    fwrite(ids,         sizeof(int),             count, fp);
+    fwrite(names,       sizeof(char) * MAX_NAME, count, fp);
+    fwrite(departments, sizeof(char) * MAX_NAME, count, fp);
+    fwrite(basicSalary, sizeof(double),          count, fp);
+    fwrite(housing,     sizeof(double),          count, fp);
+    fwrite(transport,   sizeof(double),          count, fp);
+
+    fclose(fp);
+
+    printf("Saved %d employee record(s) to data/employees.dat (binary)\n", count);
+}
+
+
+/* ---------- load all employees from the BINARY file ---------- */
+void loadEmployeesBinary(void)
+{
+    FILE *fp;
+    int stored = 0;
+
+    fp = fopen("data/employees.dat", "rb");
+
+    if (fp == NULL) {
+        printf("No saved binary file found (data/employees.dat).\n");
+        return;
+    }
+
+    /* fread returns the number of items it actually read.
+       If it is not 1 here, the file is empty or damaged. */
+    if (fread(&stored, sizeof(int), 1, fp) != 1) {
+        printf("Error: data/employees.dat is empty or damaged.\n");
+        fclose(fp);
+        return;
+    }
+
+    if (stored < 0 || stored > MAX_EMPLOYEES) {
+        printf("Error: record count in the file is not valid.\n");
+        fclose(fp);
+        return;
+    }
+
+    fread(ids,         sizeof(int),             stored, fp);
+    fread(names,       sizeof(char) * MAX_NAME, stored, fp);
+    fread(departments, sizeof(char) * MAX_NAME, stored, fp);
+    fread(basicSalary, sizeof(double),          stored, fp);
+    fread(housing,     sizeof(double),          stored, fp);
+    fread(transport,   sizeof(double),          stored, fp);
+
+    fclose(fp);
+
+    count = stored;
+
+    printf("Loaded %d employee record(s) from data/employees.dat (binary)\n", count);
+}

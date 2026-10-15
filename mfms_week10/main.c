@@ -31,7 +31,9 @@ static void displayMainMenu(void)
     printf("3. Reports\n");
     printf("4. Save Data\n");
     printf("5. Load Data\n");
-    printf("6. Exit\n\n");
+    printf("6. Save Data (binary)\n");
+    printf("7. Load Data (binary)\n");
+    printf("8. Exit\n\n");
 }
 
 int main(void)
@@ -63,7 +65,13 @@ int main(void)
                 loadEmployees();
                 loadBudgets();
                 break;
-            case 6:
+                        case 6:
+                saveEmployeesBinary();
+                break;
+            case 7:
+                loadEmployeesBinary();
+                break;
+            case 8:
                 printf("\nThank you for using the system. Goodbye.\n");
                 break;
             default:
